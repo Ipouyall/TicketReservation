@@ -4,9 +4,11 @@ import (
 	"github.com/gorilla/mux"
 	"net/http"
 	"time"
+	"TicketReservation/src/app/server/manager"
 )
 
 type Server struct { // we need to have access to tickets and events
+	ticketservice: manager.TicketService,
 }
 
 func (s *Server) SetupHttpApiServer() error {
@@ -23,4 +25,15 @@ func (s *Server) SetupHttpApiServer() error {
 	}
 
 	return srv.ListenAndServe()
+}
+
+func (s *Server) CreateTicketService()(*manager.TicketService){
+
+	return &TicketService{
+		 events:     make(map[int]*event),
+		 tickets:    make(map[int]*ticket),
+		 eventMutex: sync.Mutex{},
+		 ticketMutex: sync.Mutex{},
+	 }
+
 }

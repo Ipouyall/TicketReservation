@@ -19,7 +19,10 @@ func (s *Server) setReservationHandler(w http.ResponseWriter, r *http.Request) {
 	eventID := requestData["EventID"].(string)
 	numTickets := int(requestData["numTickets"].(float64))
 
-	ticketIDs, err := s.BookingClient.BookTicket(eventID, numTickets)
+
+
+
+	ticketIDs, err := s.ticketservice.BookTickets(eventID, numTickets)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
@@ -36,7 +39,7 @@ func (s *Server) setReservationHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Server) getEventsHandler(w http.ResponseWriter, r *http.Request) {
-	events, err := s.BookingClient.ShowAvailableEvents()
+	events, err := s.ticketservice.ListEvents()
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -64,7 +67,7 @@ func (s *Server) createEventHandler(w http.ResponseWriter, r *http.Request) {
 	data := eventData["Data"].(string)
 	totalTickets := int(eventData["totalTickets"].(float64))
 
-	event, err := s.BookingClient.CreateEvent(name, data, totalTickets)
+	event, err := s.ticketservice.CreateEvent(name, data, totalTickets)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return

@@ -9,11 +9,13 @@ import (
 )
 
 type TicketService struct {
-	events      sync.Map
+	events      map[int]*model.Event
 	tickets     map[int]*model.Ticket
 	eventMutex  sync.Mutex
 	ticketMutex sync.Mutex
 }
+
+
 
 func (ts *TicketService) CreateEvent(name string, data time.Time, totalTickets int) (*model.Event, error) {
 
