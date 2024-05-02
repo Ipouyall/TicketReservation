@@ -3,6 +3,7 @@ package rest
 import (
 	"encoding/json"
 	"net/http"
+	"time"
 )
 
 func (s *Server) setReservationHandler(w http.ResponseWriter, r *http.Request) {
@@ -19,10 +20,7 @@ func (s *Server) setReservationHandler(w http.ResponseWriter, r *http.Request) {
 	eventID := requestData["EventID"].(string)
 	numTickets := int(requestData["numTickets"].(float64))
 
-
-
-
-	ticketIDs, err := s.ticketservice.BookTickets(eventID, numTickets)
+	ticketIDs, err := s.TicketService.BookTickets(eventID, numTickets)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
@@ -39,13 +37,13 @@ func (s *Server) setReservationHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Server) getEventsHandler(w http.ResponseWriter, r *http.Request) {
-	events, err := s.ticketservice.ListEvents()
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
+	events := s.TicketService.ListEvents()
+	//if err != nil {
+	//	http.Error(w, err.Error(), http.StatusInternalServerError)
+	//	return
+	//}
 
-	err = json.NewEncoder(w).Encode(events)
+	err := json.NewEncoder(w).Encode(events)
 	if err != nil {
 		http.Error(w, "Failed to encode response", http.StatusInternalServerError)
 		return
@@ -64,10 +62,10 @@ func (s *Server) createEventHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	name := eventData["Name"].(string)
-	data := eventData["Data"].(string)
+	date := eventData["Date"].(time.Time)
 	totalTickets := int(eventData["totalTickets"].(float64))
 
-	event, err := s.ticketservice.CreateEvent(name, data, totalTickets)
+	event, err := s.TicketService.CreateEvent(name, date, totalTickets)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return

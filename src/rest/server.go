@@ -1,14 +1,14 @@
 package rest
 
 import (
+	"TicketReservation/src/manager"
 	"github.com/gorilla/mux"
 	"net/http"
 	"time"
-	"TicketReservation/src/app/server/manager"
 )
 
 type Server struct { // we need to have access to tickets and events
-	ticketservice: manager.TicketService,
+	TicketService manager.TicketService
 }
 
 func (s *Server) SetupHttpApiServer() error {

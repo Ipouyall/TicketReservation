@@ -9,25 +9,23 @@ import (
 )
 
 type TicketService struct {
-	events      map[int]*model.Event
-	tickets     map[int]*model.Ticket
-	eventMutex  sync.Mutex
-	ticketMutex sync.Mutex
+	Events      map[int]*model.Event
+	Tickets     map[int]*model.Ticket
+	EventMutex  sync.Mutex
+	TicketMutex sync.Mutex
 }
-
-
 
 func (ts *TicketService) CreateEvent(name string, data time.Time, totalTickets int) (*model.Event, error) {
 
 	event := model.NewEvent(utils.GenerateUUID(), name, data, totalTickets, totalTickets)
 
-	ts.events.Store(event.ID, event)
+	ts.Events.Store(event.ID, event)
 	return &event, nil
 }
 
 func (ts *TicketService) ListEvents() []*model.Event {
 	var events []*model.Event
-	ts.events.Range(func(key, value interface{}) bool {
+	ts.Events.Range(func(key, value interface{}) bool {
 		event := value.(*model.Event)
 		events = append(events, event)
 		return true
@@ -39,10 +37,10 @@ func (ts *TicketService) BookTickets(eventID string, numTickets int) ([]string, 
 
 	//implement concurrency control here (step 3)
 
-	ts.eventMutex.Lock()
-	defer ts.eventMutex.Unlock()
+	ts.EventMutex.Lock()
+	defer ts.EventMutex.Unlock()
 
-	eventObj, ok := ts.events.Load(eventID)
+	eventObj, ok := ts.Events.Load(eventID)
 	if !ok {
 		return nil, fmt.Errorf("model not found")
 
@@ -50,7 +48,7 @@ func (ts *TicketService) BookTickets(eventID string, numTickets int) ([]string, 
 
 	ev := eventObj.(*model.Event)
 	if ev.AvailableTickets < numTickets {
-		return nil, fmt.Errorf("not enough tickets available")
+		return nil, fmt.Errorf("not enough Tickets available")
 	}
 
 	var ticketIDs []string
@@ -61,7 +59,7 @@ func (ts *TicketService) BookTickets(eventID string, numTickets int) ([]string, 
 	}
 
 	ev.AvailableTickets -= numTickets
-	ts.events.Store(eventID, ev)
+	ts.Events.Store(eventID, ev)
 
 	return ticketIDs, nil
 
