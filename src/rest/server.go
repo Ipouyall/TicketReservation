@@ -26,14 +26,3 @@ func (s *Server) SetupHttpApiServer() error {
 
 	return srv.ListenAndServe()
 }
-
-func (s *Server) CreateTicketService()(*manager.TicketService){
-
-	return &TicketService{
-		 events:     make(map[int]*event),
-		 tickets:    make(map[int]*ticket),
-		 eventMutex: sync.Mutex{},
-		 ticketMutex: sync.Mutex{},
-	 }
-
-}
