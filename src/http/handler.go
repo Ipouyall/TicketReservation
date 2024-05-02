@@ -16,7 +16,6 @@ func (s *Server) setReservationHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	
 	eventID := requestData["EventID"].(string)
 	numTickets := int(requestData["numTickets"].(float64))
 
