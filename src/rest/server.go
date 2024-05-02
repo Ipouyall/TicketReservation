@@ -1,4 +1,4 @@
-package http
+package rest
 
 import (
 	"github.com/gorilla/mux"
@@ -7,7 +7,6 @@ import (
 )
 
 type Server struct { // we need to have access to tickets and events
-
 }
 
 func (s *Server) SetupHttpApiServer() error {

@@ -1,49 +1,32 @@
-package shared
+package manager
 
 import (
+	"TicketReservation/src/model"
+	"TicketReservation/src/utils"
 	"fmt"
 	"sync"
 	"time"
 )
 
-type event struct {
-	ID               string
-	Name             string
-	Date             time.Time
-	TotalTickets     int
-	AvailableTickets int
-}
-
-type ticket struct {
-	ID      string
-	EventID string
-}
-
 type TicketService struct {
 	events      sync.Map
-	tickets     map[int]*ticket
+	tickets     map[int]*model.Ticket
 	eventMutex  sync.Mutex
 	ticketMutex sync.Mutex
 }
 
-func (ts *TicketService) CreateEvent(name string, data time.Time, totalTickets int) (*event, error) {
+func (ts *TicketService) CreateEvent(name string, data time.Time, totalTickets int) (*model.Event, error) {
 
-	event := &event{
-		ID:               generateUUID(), //Generate a unique ID for the event
-		Name:             name,
-		Date:             data,
-		TotalTickets:     totalTickets,
-		AvailableTickets: totalTickets,
-	}
+	event := model.NewEvent(utils.GenerateUUID(), name, data, totalTickets, totalTickets)
 
 	ts.events.Store(event.ID, event)
-	return event, nil
+	return &event, nil
 }
 
-func (ts *TicketService) ListEvents() []*event {
-	var events []*event
+func (ts *TicketService) ListEvents() []*model.Event {
+	var events []*model.Event
 	ts.events.Range(func(key, value interface{}) bool {
-		event := value.(*event)
+		event := value.(*model.Event)
 		events = append(events, event)
 		return true
 	})
@@ -59,20 +42,20 @@ func (ts *TicketService) BookTickets(eventID string, numTickets int) ([]string, 
 
 	eventObj, ok := ts.events.Load(eventID)
 	if !ok {
-		return nil, fmt.Errorf("event not found")
+		return nil, fmt.Errorf("model not found")
 
 	}
 
-	ev := eventObj.(*event)
+	ev := eventObj.(*model.Event)
 	if ev.AvailableTickets < numTickets {
 		return nil, fmt.Errorf("not enough tickets available")
 	}
 
 	var ticketIDs []string
 	for i := 0; i < numTickets; i++ {
-		ticketID := generateUUID()
+		ticketID := utils.GenerateUUID()
 		ticketIDs = append(ticketIDs, ticketID)
-		// Store the ticket in a separate data structure if needed
+		// Store the ticket in a separate model structure if needed
 	}
 
 	ev.AvailableTickets -= numTickets
