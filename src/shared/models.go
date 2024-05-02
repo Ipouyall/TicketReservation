@@ -1,36 +1,43 @@
+package shared
+
+import (
+	"fmt"
+	"sync"
+	"time"
+)
 
 type event struct {
-    ID      string
-    Name    string
-    Date    time.Time
-	TotalTickets int
-    AvailableTickets  int
+	ID               string
+	Name             string
+	Date             time.Time
+	TotalTickets     int
+	AvailableTickets int
 }
 
 type ticket struct {
-    ID     string
-    EventID  string
+	ID      string
+	EventID string
 }
 
 type TicketService struct {
-    events     sync.Map
-    tickets    map[int]*ticket
-    eventMutex sync.Mutex
-    ticketMutex sync.Mutex
+	events      sync.Map
+	tickets     map[int]*ticket
+	eventMutex  sync.Mutex
+	ticketMutex sync.Mutex
 }
 
-func (ts *TicketService) CreateEvent(name string , data time.Time , totalTickets int)(*event , error){
+func (ts *TicketService) CreateEvent(name string, data time.Time, totalTickets int) (*event, error) {
 
 	event := &event{
-		ID :  		generateUUID(), //Generate a unique ID for the event
-		Name : 		name,
-		Date :		data,
-		TotalTickets : totalTickets,
-		AvailableTickets : totalTickets,
+		ID:               generateUUID(), //Generate a unique ID for the event
+		Name:             name,
+		Date:             data,
+		TotalTickets:     totalTickets,
+		AvailableTickets: totalTickets,
 	}
 
-	ts.events.Store(event.ID , event)
-	return event,nil
+	ts.events.Store(event.ID, event)
+	return event, nil
 }
 
 func (ts *TicketService) ListEvents() []*event {
@@ -43,22 +50,22 @@ func (ts *TicketService) ListEvents() []*event {
 	return events
 }
 
-func (ts *TicketService) BookTickets (eventID string , numTickets int) ([]string , error){
+func (ts *TicketService) BookTickets(eventID string, numTickets int) ([]string, error) {
 
 	//implement concurrency control here (step 3)
-	
-	ts.eventMutex.Lock()
-    defer ts.eventMutex.Unlock()
 
-	eventObj , ok := ts.events.Load(eventID)
+	ts.eventMutex.Lock()
+	defer ts.eventMutex.Unlock()
+
+	eventObj, ok := ts.events.Load(eventID)
 	if !ok {
-		return nil , fmt.Errorf("event not found")
+		return nil, fmt.Errorf("event not found")
 
 	}
 
-	ev := eventObj. (*event)
+	ev := eventObj.(*event)
 	if ev.AvailableTickets < numTickets {
-		return nil, fmt. Errorf("not enough tickets available")
+		return nil, fmt.Errorf("not enough tickets available")
 	}
 
 	var ticketIDs []string
