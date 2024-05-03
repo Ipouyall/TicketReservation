@@ -1,4 +1,5 @@
-package client
+package main
 
 func main() {
+
 }

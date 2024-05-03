@@ -1,4 +1,4 @@
-package client
+package main
 
 import (
 	"TicketReservation/src/app/client/ui"
