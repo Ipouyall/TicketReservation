@@ -93,7 +93,12 @@ func (c Client) BookTicket(eventId string, quantity int) (ticketIDs []string, ms
 		log.Println("Error decoding response body:", err.Error())
 		return
 	}
-	ticketIDs = responseData["ticketIDs"].([]string)
+	ticketIDsInterface := responseData["ticketIDs"].([]interface{})
+
+	ticketIDs = make([]string, len(ticketIDsInterface))
+	for i, v := range ticketIDsInterface {
+		ticketIDs[i] = v.(string)
+	}
 
 	return
 }
