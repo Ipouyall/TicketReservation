@@ -11,7 +11,7 @@ type Server struct { // we need to have access to tickets and events
 	TicketService manager.TicketService
 }
 
-func (s *Server) SetupHttpApiServer() error {
+func (s *Server) SetupHttpApiServer(port string) error {
 	router := mux.NewRouter()
 	router.HandleFunc(apiSetReservation, s.setReservationHandler)
 	router.HandleFunc(apiCreateEvent, s.createEventHandler)
@@ -19,7 +19,7 @@ func (s *Server) SetupHttpApiServer() error {
 
 	srv := &http.Server{
 		Handler:      router,
-		Addr:         serverAddr,
+		Addr:         serverAddr + ":" + port,
 		WriteTimeout: 15 * time.Second,
 		ReadTimeout:  15 * time.Second,
 	}
