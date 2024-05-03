@@ -100,13 +100,14 @@ func (m EventModel) View() string {
 		if i == m.Selected {
 			nameStyle := lipgloss.NewStyle().Bold(true)
 			view += nameStyle.Render(color.GreenString("[x]")+"\t"+event.Name) + "\n"
+			view += "\tDate: " + event.Date.Format("2024-01-01 11:11") + "\n"
+			view += "\tAvailable Tickets: " + strconv.Itoa(event.AvailableTickets) + "\n"
+			view += "\tTotal Tickets: " + strconv.Itoa(event.TotalTickets) + "\n"
+			view += "\t(ID: " + event.ID + ")\n\n"
 		} else {
-			view += "[ ] " + event.Name + "\n"
+			view += "[ ] " + event.Name + " (" + event.Date.Format("2024-01-01") + ")\n"
+			view += "\tAvailable Tickets: " + strconv.Itoa(event.AvailableTickets) + "\n\n"
 		}
-		view += "\tDate: " + event.Date.Format("2024-01-01 11:11") + "\n"
-		view += "\tAvailable Tickets: " + strconv.Itoa(event.AvailableTickets) + "\n"
-		view += "\tTotal Tickets: " + strconv.Itoa(event.TotalTickets) + "\n"
-		view += "\t(ID: " + event.ID + ")\n\n"
 	}
 	return view
 }
