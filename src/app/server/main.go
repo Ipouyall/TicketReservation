@@ -1,7 +1,5 @@
 package main
 
-// import "fmt"
-
 import (
 	"TicketReservation/src/manager"
 	"TicketReservation/src/rest/server"
@@ -9,17 +7,17 @@ import (
 	"sync"
 )
 
-// func main() {
-// 	fmt.Println("Server is running")
-// }
-
 func main() {
 	port := "8000"
+	filePath := "src/app/server/database.json"
 
 	ticketService := manager.TicketService{
 		Events:  sync.Map{},
 		Tickets: sync.Map{},
 	}
+
+	ticketService.ReadData(filePath)
+	defer ticketService.WriteData(filePath)
 
 	server := server.Server{
 		TicketService: ticketService,
