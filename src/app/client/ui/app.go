@@ -73,16 +73,21 @@ func (a *App) bookTickets() {
 func (a *App) createNewEvent() {
 	var name string
 	var date time.Time
+	var dateStr, timeStr string
 	var totalTickets int
 
-	fmt.Println("**[Create new event]**")
+	fmt.Println("\n**[Create new event]**")
 	fmt.Print("Name: ")
 	_, err := fmt.Scanln(&name)
 	if err != nil {
 		log.Fatal(err)
 	}
 	fmt.Print("Date (YYYY-MM-DD hh:mm): ")
-	_, err = fmt.Scanln(&date)
+	_, err = fmt.Scanln(&dateStr, &timeStr)
+	if err != nil {
+		log.Fatal(err)
+	}
+	date, err = time.Parse("2006-01-02 15:04", dateStr+" "+timeStr)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -103,14 +108,14 @@ func (a *App) createNewEvent() {
 }
 
 func (a *App) help() {
-	fmt.Println("**[Help menu]**")
+	fmt.Println("\n**[Help menu]**")
 
 	fmt.Println("\nYour are in the interactive UI, here are what you can do:")
 	fmt.Println("1. Show events: You can see are events defined in the system, Events won't be filtered by date for ticket availability and sorted in random order.")
 	fmt.Println("2. Book ticket: You can book tickets for an event if enough number of ticket is remained.")
 	fmt.Println("3. Create new event: You can create a new event, you can define the name, date and total tickets for it.")
 	fmt.Println("4. Help: You can see this menu again.")
-	fmt.Println("5. Exit: You can exit the program.")
+	fmt.Println("5. Exit: You can exit the program. You can also use \"ctrl+c\", \"esc\", \"q\" to exit.")
 
 	fmt.Println("\nThere also exists a test mode, designed to test server inder pressure. You can't access that mode here.")
 	fmt.Println("To enable test mode, run the program with the -test -client <number of parallel clients> -pressure <number of request each client send in each test stage>")
@@ -131,7 +136,11 @@ func (a *App) step() bool {
 		fmt.Printf("Error running program: %v\n", err)
 	}
 
-	itemID := initialModel.Items[m.(Model).Selected].ID
+	idx := m.(Model).Selected
+	if idx == -1 {
+		return false
+	}
+	itemID := initialModel.Items[idx].ID
 	switch itemID {
 	case 1: // Show Events
 		a.showEvents()
