@@ -102,7 +102,7 @@ func (c Client) CreateEvent(name string, date time.Time, totalTickets int) (even
 
 	eventData := map[string]interface{}{
 		"Name":         name,
-		"Date":         date,
+		"Date":         date.Format("2024-01-01 11:11"),
 		"totalTickets": totalTickets,
 	}
 	reqBody, err := json.Marshal(eventData)

@@ -58,8 +58,12 @@ func (s *Server) createEventHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	name := eventData["Name"].(string)
-	date := eventData["Date"].(time.Time)
+	date, err := time.Parse("2024-01-01 11:11", eventData["Date"].(string))
 	totalTickets := int(eventData["totalTickets"].(float64))
+	if err != nil {
+		http.Error(w, "Failed to parse date", http.StatusBadRequest)
+		return
+	}
 
 	event, err := s.TicketService.CreateEvent(name, date, totalTickets)
 	if err != nil {
