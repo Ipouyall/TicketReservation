@@ -2,6 +2,7 @@ package server
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 	"time"
@@ -69,15 +70,16 @@ func (s *Server) createEventHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Failed to parse request body", http.StatusBadRequest)
 		return
 	}
+	fmt.Println(eventData)
 
 	name := eventData["Name"].(string)
-	date, err := time.Parse("2024-01-01 11:11", eventData["Date"].(string))
-	totalTickets := int(eventData["totalTickets"].(float64))
+	date, err := time.Parse("2006-01-02 15:04", eventData["Date"].(string))
 	if err != nil {
 		log.Println("Failed to parse date:", err.Error())
 		http.Error(w, "Failed to parse date", http.StatusBadRequest)
 		return
 	}
+	totalTickets := int(eventData["totalTickets"].(float64))
 
 	event, err := s.TicketService.CreateEvent(name, date, totalTickets)
 	if err != nil {
@@ -95,5 +97,5 @@ func (s *Server) createEventHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Failed to encode response", http.StatusInternalServerError)
 		return
 	}
-	log.Println("Event created successfully.")
+	log.Println("Event created successfully: ", event)
 }

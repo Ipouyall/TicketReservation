@@ -93,12 +93,7 @@ func (c Client) BookTicket(eventId string, quantity int) (ticketIDs []string, ms
 		log.Println("Error decoding response body:", err.Error())
 		return
 	}
-	ticketIDsInterface := responseData["ticketIDs"].([]interface{})
-
-	ticketIDs = make([]string, len(ticketIDsInterface))
-	for i, v := range ticketIDsInterface {
-		ticketIDs[i] = v.(string)
-	}
+	ticketIDs = responseData["ticketIDs"].([]string)
 
 	return
 }
@@ -109,7 +104,7 @@ func (c Client) CreateEvent(name string, date time.Time, totalTickets int) (even
 
 	eventData := map[string]interface{}{
 		"Name":         name,
-		"Date":         date.Format("2024-01-01 11:11"),
+		"Date":         date.Format("2006-01-02 15:04"),
 		"totalTickets": totalTickets,
 	}
 	reqBody, err := json.Marshal(eventData)

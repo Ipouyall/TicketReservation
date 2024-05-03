@@ -46,7 +46,7 @@ func (ts *TicketService) BookTickets(eventID string, numTickets int) ([]string, 
 
 	}
 
-	ev := eventObj.(*model.Event)
+	ev := eventObj.(model.Event)
 	if ev.AvailableTickets < numTickets {
 		return nil, fmt.Errorf("not enough Tickets available")
 	}
