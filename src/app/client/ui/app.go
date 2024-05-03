@@ -97,6 +97,7 @@ func (a *App) createNewEvent() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	fmt.Println()
 
 	id, _, err := a.api.CreateEvent(name, date, totalTickets)
 
