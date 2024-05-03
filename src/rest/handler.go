@@ -38,10 +38,6 @@ func (s *Server) setReservationHandler(w http.ResponseWriter, r *http.Request) {
 
 func (s *Server) getEventsHandler(w http.ResponseWriter, r *http.Request) {
 	events := s.TicketService.ListEvents()
-	//if err != nil {
-	//	http.Error(w, err.Error(), http.StatusInternalServerError)
-	//	return
-	//}
 
 	err := json.NewEncoder(w).Encode(events)
 	if err != nil {
