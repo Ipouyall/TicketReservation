@@ -47,7 +47,7 @@ func (a *App) bookTickets() {
 	}
 	selectedEvent := events[m.(EventModel).Selected]
 
-	fmt.Print("\033[2J")
+	clearTerminal()
 	fmt.Println("Booking Ticket for: ", selectedEvent.ToString()+"\n")
 
 	// Get quantity of tickets
