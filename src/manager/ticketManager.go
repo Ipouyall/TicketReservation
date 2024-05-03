@@ -6,6 +6,9 @@ import (
 	"fmt"
 	"sync"
 	"time"
+	"encoding/json"
+	"io/ioutil"
+	"os"
 )
 
 type TicketService struct {
@@ -63,4 +66,57 @@ func (ts *TicketService) BookTickets(eventID string, numTickets int) ([]string, 
 
 	return ticketIDs, nil
 
+}
+
+func (ts *TicketService) ReadData(filePath string) {
+	ts.EventMutex.Lock()
+	defer ts.EventMutex.Unlock()
+	
+	file, err := os.OpenFile(filePath, os.O_RDWR|os.O_CREATE, 0644)
+	if err != nil {
+		return
+	}
+	defer file.Close()
+	
+	data, err := ioutil.ReadFile(filePath)
+	if err != nil {
+		return
+	}
+
+	var events []model.Event
+	err = json.Unmarshal(data, &events)
+	if err != nil {
+		return
+	}
+
+	for _, event := range events {
+		ts.Events.Store(event.ID, event)
+	}
+
+	return
+}
+
+func (ts *TicketService) WriteData(filePath string) {
+	ts.EventMutex.Lock()
+	defer ts.EventMutex.Unlock()
+
+	fmt.Println(ts.ListEvents())
+
+	eventsJSON, err := json.Marshal(ts.ListEvents())
+	if err != nil {
+		return
+	}
+
+	file, err := os.OpenFile(filePath, os.O_RDWR|os.O_CREATE, 0644)
+	if err != nil {
+		return
+	}
+	defer file.Close()
+
+	err = ioutil.WriteFile(filePath, eventsJSON, 0644)
+	if err != nil {
+		return
+	}
+
+	return
 }

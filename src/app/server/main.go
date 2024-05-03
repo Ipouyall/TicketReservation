@@ -5,9 +5,17 @@ import (
 	"TicketReservation/src/rest/server"
 	"log"
 	"sync"
+
+	"os"
+    "os/signal"
+    "syscall"
+
 )
 
 func main() {
+	sigCh := make(chan os.Signal, 1)
+    signal.Notify(sigCh, os.Interrupt, syscall.SIGTERM)
+
 	port := "8000"
 	filePath := "src/app/server/database.json"
 
@@ -17,14 +25,24 @@ func main() {
 	}
 
 	ticketService.ReadData(filePath)
-	defer ticketService.WriteData(filePath)
 
 	server := server.Server{
 		TicketService: ticketService,
 	}
 
-	err := server.SetupHttpApiServer(port)
-	if err != nil {
-		log.Fatalf("Failed to set up HTTP server: %v", err)
-	}
+	errCh := make(chan error, 1)
+
+    go func() {
+        errCh <- server.SetupHttpApiServer(port)
+    }()
+
+	select {
+    case sig := <-sigCh:
+        log.Printf("Received signal: %v", sig)
+		server.TicketService.WriteData(filePath)
+    case err := <-errCh:
+        if err != nil {
+            log.Fatalf("Failed to set up HTTP server: %v", err)
+        }
+    }
 }
