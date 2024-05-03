@@ -10,20 +10,20 @@ build: build_client build_server
 deps:
 	@echo "Start cloning dependencies...$(NC)"
 	@go get ./...
-	@echo "$(RED)Exiting dependency cloning process.$(NC)"
+	@echo "$(GREEN)Exiting dependency cloning process.$(NC)"
 
 build_client:
 	@echo "Start building Client...$(NC)"
 	@go build -o client src/app/client/main.go
-	@echo "$(RED)Exiting client's building process.$(NC)"
+	@echo "$(GREEN)Exiting client's building process.$(NC)"
 
 build_server:
 	@echo "Start building Server...$(NC)"
 	@go build -o server src/app/server/main.go
-	@echo "$(RED)Exiting server's building process.$(NC)"
+	@echo "$(GREEN)Exiting server's building process.$(NC)"
 
 clean:
 	@rm client server
-	@echo "$(RED)Client and server binary files removed.$(NC)"
+	@echo "$(GREEN)Client and server binary files removed.$(NC)"
 
 .PHONY: all build clean build_client build_server deps

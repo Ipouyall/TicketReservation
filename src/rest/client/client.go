@@ -1,7 +1,8 @@
-package rest
+package client
 
 import (
 	"TicketReservation/src/model"
+	"TicketReservation/src/rest"
 	"bytes"
 	"encoding/json"
 	"fmt"
@@ -14,9 +15,9 @@ type Client struct {
 	serverURL string
 }
 
-func NewClient(serverURL string) Client {
+func NewClient(serverPort string) Client {
 	return Client{
-		serverURL: "http://" + serverURL,
+		serverURL: "http://" + rest.ServerAddr + ":" + serverPort,
 	}
 }
 
@@ -24,7 +25,7 @@ func (c Client) GetEvents() (events []model.Event, msg string, err error) {
 	client := &http.Client{}
 	log.SetPrefix("[Client] (getEvents)")
 
-	req, err := http.NewRequest("GET", c.serverURL+apiGetEvents, nil)
+	req, err := http.NewRequest("GET", c.serverURL+rest.ApiGetEvents, nil)
 	if err != nil {
 		log.Println("Error preparing request:", err.Error())
 		return
@@ -65,7 +66,7 @@ func (c Client) BookTicket(eventId string, quantity int) (ticketIDs []string, ms
 		return
 	}
 
-	req, err := http.NewRequest("POST", c.serverURL+apiSetReservation, bytes.NewBuffer(reqBody))
+	req, err := http.NewRequest("POST", c.serverURL+rest.ApiSetReservation, bytes.NewBuffer(reqBody))
 	if err != nil {
 		log.Println("Error preparing request:", err.Error())
 		return
@@ -110,7 +111,7 @@ func (c Client) CreateEvent(name string, date time.Time, totalTickets int) (even
 		return
 	}
 
-	req, err := http.NewRequest("POST", c.serverURL+apiCreateEvent, bytes.NewBuffer(reqBody))
+	req, err := http.NewRequest("POST", c.serverURL+rest.ApiCreateEvent, bytes.NewBuffer(reqBody))
 	if err != nil {
 		log.Println("Error preparing request:", err.Error())
 		return

@@ -1,8 +1,8 @@
-package main
+package ui
 
 import (
-	"TicketReservation/src/app/client/ui"
 	"TicketReservation/src/rest"
+	"TicketReservation/src/rest/client"
 	"fmt"
 	tea "github.com/charmbracelet/bubbletea"
 	"log"
@@ -12,17 +12,17 @@ import (
 )
 
 type App struct {
-	api rest.IClient
+	api client.IClient
 }
 
-func NewApp(api rest.IClient) *App {
+func NewApp(api client.IClient) *App {
 	return &App{api: api}
 }
 
 func (a *App) showEvents() {
 	events, _, err := a.api.GetEvents()
 	if err != nil {
-		fmt.Printf("Error getting events: %v\n", err)
+		fmt.Println("Failed to get events from server.")
 		return
 	}
 
@@ -35,16 +35,16 @@ func (a *App) showEvents() {
 func (a *App) bookTickets() {
 	events, _, err := a.api.GetEvents()
 	if err != nil {
-		fmt.Printf("Error getting events: %v\n", err)
+		fmt.Println("Failed to get events from server.")
 	}
 
-	board := ui.NewEventModel(events)
+	board := NewEventModel(events)
 	p := tea.NewProgram(board)
 	m, err := p.Run()
 	if err != nil {
 		log.Fatal(err)
 	}
-	selectedEvent := events[m.(ui.EventModel).Selected]
+	selectedEvent := events[m.(EventModel).Selected]
 
 	fmt.Print("\033[2J")
 	fmt.Println("Booking Ticket for: ", selectedEvent.ToString()+"\n")
@@ -59,7 +59,7 @@ func (a *App) bookTickets() {
 
 	ticketsID, _, err := a.api.BookTicket(selectedEvent.ID, quantity)
 	if err != nil {
-		fmt.Printf("Error booking ticket: %v\n", err)
+		fmt.Println("Failed to book ticket(s)")
 		return
 	}
 
@@ -95,7 +95,7 @@ func (a *App) createNewEvent() {
 	id, _, err := a.api.CreateEvent(name, date, totalTickets)
 
 	if err != nil {
-		fmt.Printf("Error creating event: %v\n", err)
+		fmt.Printf("Failed to create event.")
 		return
 	}
 	fmt.Println("Event created successfully!\n\"Event ID: ", id, "\"")
@@ -117,12 +117,12 @@ func (a *App) help() {
 	fmt.Println("\tExample: ./client -test -client 5 -pressure 10")
 	fmt.Println("\tThis will run 5 parallel clients, each sending 10 requests in each test stage.")
 
-	fmt.Println("\nTo run client, use -p flag to set port. default is 8000")
+	fmt.Println("\nTo run client, use -p flag to set port. default is ", rest.DefaultPort, ".")
 	return
 }
 
 func (a *App) step() bool {
-	initialModel := ui.Model{}
+	initialModel := Model{}
 	initialModel.InitBaseMenu()
 
 	p := tea.NewProgram(initialModel)
@@ -131,7 +131,7 @@ func (a *App) step() bool {
 		fmt.Printf("Error running program: %v\n", err)
 	}
 
-	itemID := initialModel.Items[m.(ui.Model).Selected].ID
+	itemID := initialModel.Items[m.(Model).Selected].ID
 	switch itemID {
 	case 1: // Show Events
 		a.showEvents()
@@ -147,7 +147,7 @@ func (a *App) step() bool {
 	return true
 }
 
-func (a *App) Run() {
+func (a *App) RunUI() {
 	for {
 		fmt.Print("\033[2J")
 		cmd := exec.Command("clear")
@@ -157,12 +157,18 @@ func (a *App) Run() {
 			log.Fatal(err)
 		}
 		if a.step() == false {
-			break
+			fmt.Print("\033[2J")
+			fmt.Println("Exiting the program...")
+			return
 		}
 		// Wait for used to press enter to return
 		fmt.Println("\nPress enter to return")
 		_, _ = fmt.Scanln()
 
-		time.Sleep(1 * time.Second)
+		time.Sleep(100 * time.Millisecond)
 	}
+}
+
+func (a *App) RunTest(clientNum, loadDeg int) {
+	panic("Implement App.RunTest!")
 }

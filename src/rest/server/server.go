@@ -1,7 +1,8 @@
-package rest
+package server
 
 import (
 	"TicketReservation/src/manager"
+	"TicketReservation/src/rest"
 	"github.com/gorilla/mux"
 	"net/http"
 	"time"
@@ -13,13 +14,13 @@ type Server struct { // we need to have access to tickets and events
 
 func (s *Server) SetupHttpApiServer(port string) error {
 	router := mux.NewRouter()
-	router.HandleFunc(apiSetReservation, s.setReservationHandler)
-	router.HandleFunc(apiCreateEvent, s.createEventHandler)
-	router.HandleFunc(apiGetEvents, s.getEventsHandler)
+	router.HandleFunc(rest.ApiSetReservation, s.setReservationHandler)
+	router.HandleFunc(rest.ApiCreateEvent, s.createEventHandler)
+	router.HandleFunc(rest.ApiGetEvents, s.getEventsHandler)
 
 	srv := &http.Server{
 		Handler:      router,
-		Addr:         serverAddr + ":" + port,
+		Addr:         rest.ServerAddr + ":" + port,
 		WriteTimeout: 15 * time.Second,
 		ReadTimeout:  15 * time.Second,
 	}
