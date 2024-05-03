@@ -8,6 +8,7 @@ import (
 	"log"
 	"os"
 	"os/exec"
+	"runtime"
 	"time"
 )
 
@@ -137,6 +138,7 @@ func (a *App) step() bool {
 	}
 
 	idx := m.(Model).Selected
+	clearTerminal()
 	if idx == -1 {
 		return false
 	}
@@ -158,13 +160,7 @@ func (a *App) step() bool {
 
 func (a *App) RunUI() {
 	for {
-		fmt.Print("\033[2J")
-		cmd := exec.Command("clear")
-		cmd.Stdout = os.Stdout
-		err := cmd.Run()
-		if err != nil {
-			log.Fatal(err)
-		}
+		clearTerminal()
 		if a.step() == false {
 			fmt.Print("\033[2J")
 			fmt.Println("Exiting the program...")
@@ -175,6 +171,22 @@ func (a *App) RunUI() {
 		_, _ = fmt.Scanln()
 
 		time.Sleep(100 * time.Millisecond)
+	}
+}
+
+func clearTerminal() {
+	fmt.Print("\033[2J")
+	var cmd *exec.Cmd
+	switch runtime.GOOS {
+	case "windows":
+		cmd = exec.Command("cmd", "/c", "cls")
+	default:
+		cmd = exec.Command("clear")
+	}
+	cmd.Stdout = os.Stdout
+	err := cmd.Run()
+	if err != nil {
+		log.Fatal(err)
 	}
 }
 
