@@ -77,7 +77,7 @@ func (a *App) createNewEvent() {
 	var dateStr, timeStr string
 	var totalTickets int
 
-	fmt.Println("\n**[Create new event]**")
+	fmt.Println("**[Create new event]**")
 	fmt.Print("Name: ")
 	_, err := fmt.Scanln(&name)
 	if err != nil {
@@ -109,7 +109,7 @@ func (a *App) createNewEvent() {
 }
 
 func (a *App) help() {
-	fmt.Println("\n**[Help menu]**")
+	fmt.Println("**[Help menu]**")
 
 	fmt.Println("\nYour are in the interactive UI, here are what you can do:")
 	fmt.Println("1. Show events: You can see are events defined in the system, Events won't be filtered by date for ticket availability and sorted in random order.")
