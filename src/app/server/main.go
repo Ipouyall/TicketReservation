@@ -5,8 +5,8 @@ package main
 import (
 	"TicketReservation/src/manager"
 	"TicketReservation/src/rest/server"
-	"sync"
 	"log"
+	"sync"
 )
 
 // func main() {
@@ -15,18 +15,18 @@ import (
 
 func main() {
 	port := "8000"
-  
-	ticketService := manager.TicketService {
-		Events: sync.Map {},
-		Tickets: sync.Map {},
+
+	ticketService := manager.TicketService{
+		Events:  sync.Map{},
+		Tickets: sync.Map{},
 	}
-  
-	server := server.Server {
-	  	TicketService: ticketService,
+
+	server := server.Server{
+		TicketService: ticketService,
 	}
-	
+
 	err := server.SetupHttpApiServer(port)
-	  	if err != nil {
-			  log.Fatalf("Failed to set up HTTP server: %v", err)
+	if err != nil {
+		log.Fatalf("Failed to set up HTTP server: %v", err)
 	}
 }

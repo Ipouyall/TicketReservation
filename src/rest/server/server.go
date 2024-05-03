@@ -27,7 +27,7 @@ func (s *Server) SetupHttpApiServer(port string) error {
 		ReadTimeout:  15 * time.Second,
 	}
 
-	log.Printf("Server is running on %s", rest.ServerAddr + ":" + port)
+	log.Printf("Server is running on %s", rest.ServerAddr+":"+port)
 
 	return srv.ListenAndServe()
 }

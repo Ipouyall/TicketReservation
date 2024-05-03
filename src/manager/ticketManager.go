@@ -23,10 +23,10 @@ func (ts *TicketService) CreateEvent(name string, data time.Time, totalTickets i
 	return &event, nil
 }
 
-func (ts *TicketService) ListEvents() []*model.Event {
-	var events []*model.Event
+func (ts *TicketService) ListEvents() []model.Event {
+	var events []model.Event
 	ts.Events.Range(func(key, value interface{}) bool {
-		event := value.(*model.Event)
+		event := value.(model.Event)
 		events = append(events, event)
 		return true
 	})
