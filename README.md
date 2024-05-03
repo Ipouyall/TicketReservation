@@ -31,6 +31,8 @@ make build
 You can simply run project by using `./client` or `./server`. Tpu can also set some options through **Commandline arguments** 
 that are explained in client's help menu.
 
+![client help menu](./docs/figs/client-help.jpg)
+
 ---
 # Key Features
 
@@ -47,6 +49,17 @@ The client interface in the ticket reservation system provides a user-friendly w
 It likely includes features such as displaying available events, allowing users to reserve ticket. 
 The interface enhances the usability of the system by simplifying the process of browsing events and managing ticket reservations, 
 ultimately improving the overall user experience. Also, client UI is able to enhance used experiments and make it easier to work with.
+
+![client interface menu](./docs/figs/client-interface-menu.jpg)
+![client show events](./docs/figs/client-interface-show.jpg)
+![client interface booking](./docs/figs/client-interface-booking.jpg)
+![client booking ticket(s)](./docs/figs/client-interface-book.jpg)
+
+## logging
+
+Enhanced logging mechanism enable us to track program flow and detect potential bugs, making program more explainable and easier to debug.
+
+![server logging](./docs/figs/server-logs.jpg)
 
 ## fairness 
 Go's scheduler ensures fair scheduling of Goroutines, preventing any single Goroutine from monopolizing CPU resources. 
