@@ -9,8 +9,8 @@ import (
 )
 
 type TicketService struct {
-	Events      map[int]*model.Event
-	Tickets     map[int]*model.Ticket
+	Events      sync.Map // map[int]*model.Event
+	Tickets     sync.Map // map[int]*model.Ticket
 	EventMutex  sync.Mutex
 	TicketMutex sync.Mutex
 }

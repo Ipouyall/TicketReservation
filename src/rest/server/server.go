@@ -6,6 +6,8 @@ import (
 	"github.com/gorilla/mux"
 	"net/http"
 	"time"
+
+	"log"
 )
 
 type Server struct { // we need to have access to tickets and events
@@ -24,6 +26,8 @@ func (s *Server) SetupHttpApiServer(port string) error {
 		WriteTimeout: 15 * time.Second,
 		ReadTimeout:  15 * time.Second,
 	}
+
+	log.Printf("Server is running on %s", rest.ServerAddr + ":" + port)
 
 	return srv.ListenAndServe()
 }
