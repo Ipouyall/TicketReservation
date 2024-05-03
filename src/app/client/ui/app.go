@@ -120,7 +120,7 @@ func (a *App) help() {
 	fmt.Println("4. Help: You can see this menu again.")
 	fmt.Println("5. Exit: You can exit the program. You can also use \"ctrl+c\", \"esc\", \"q\" to exit.")
 
-	fmt.Println("\nThere also exists a test mode, designed to test server inder pressure. You can't access that mode here.")
+	fmt.Println("\nThere also exists a test mode, designed to test server under pressure. You can't access that mode here.")
 	fmt.Println("To enable test mode, run the program with the -test -client <number of parallel clients> -pressure <number of request each client send in each test stage>")
 	fmt.Println("\tExample: ./client -test -client 5 -pressure 10")
 	fmt.Println("\tThis will run 5 parallel clients, each sending 10 requests in each test stage.")
