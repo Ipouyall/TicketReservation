@@ -39,6 +39,7 @@ func (c Client) GetEvents() (events []model.Event, msg string, err error) {
 	defer resp.Body.Close()
 	if resp.StatusCode != http.StatusOK {
 		log.Println("Error response status code:", resp.StatusCode)
+		err = fmt.Errorf("Error response status code: %d", resp.StatusCode)
 		return
 	}
 
@@ -82,6 +83,7 @@ func (c Client) BookTicket(eventId string, quantity int) (ticketIDs []string, ms
 
 	if resp.StatusCode != http.StatusOK {
 		log.Println("Error response status code:", resp.StatusCode)
+		err = fmt.Errorf("Error response status code: %d", resp.StatusCode)
 		return
 	}
 
@@ -132,6 +134,7 @@ func (c Client) CreateEvent(name string, date time.Time, totalTickets int) (even
 
 	if resp.StatusCode != http.StatusOK {
 		log.Println("Error response status code:", resp.StatusCode)
+		err = fmt.Errorf("Error response status code: %d", resp.StatusCode)
 		return
 	}
 
