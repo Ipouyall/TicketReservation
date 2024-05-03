@@ -84,4 +84,27 @@ The *Delete* method can be used to remove cached values that are no longer neede
 Overall, `sync.Map` provides a convenient and efficient way to implement a caching mechanism in Go, 
 allowing for concurrent access, lazy initialization, and non-blocking operations.
 
+**Example of a cache with sync.Map**
+```go
+type Cache struct {
+    store sync.Map
+}
+
+func (c *Cache) Set(key string, value string) {
+    c.store.Store(key, value)
+}
+
+func (c *Cache) Get(key string) (string, bool) {
+    value, ok := c.store.Load(key)
+    if ok {
+        return value.(string), ok
+    }
+    return "", ok
+}
+
+func (c *Cache) Delete(key string) {
+    c.store.Delete(key)
+}
+```
+
 ---
