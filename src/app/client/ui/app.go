@@ -4,12 +4,14 @@ import (
 	"TicketReservation/src/rest"
 	"TicketReservation/src/rest/client"
 	"fmt"
-	tea "github.com/charmbracelet/bubbletea"
 	"log"
 	"os"
 	"os/exec"
 	"runtime"
+	"sync"
 	"time"
+
+	tea "github.com/charmbracelet/bubbletea"
 )
 
 type App struct {
@@ -193,5 +195,20 @@ func clearTerminal() {
 }
 
 func (a *App) RunTest(clientNum, loadDeg int) {
-	panic("Implement App.RunTest!")
+	var wg sync.WaitGroup
+
+	for i := 0; i < clientNum; i++ {
+		wg.Add(1)
+
+		go func(clientID int) {
+			defer wg.Done()
+			for j := 0; j < loadDeg; j++ {
+				a.showEvents()
+			}
+			fmt.Printf("Client %d completed all requests.\n", clientID)
+		}(i)
+	}
+
+	wg.Wait()
+	fmt.Println("All clients have finished.")
 }
